@@ -293,25 +293,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   btnRipristina=document.getElementById('btnRipristina');
   loginInfo=document.getElementById('loginInfo');
 
-  // Verifica login persistente
-  if(sessionStorage.getItem('logged')==='BARBOSSA'){
-    loginInfo.textContent='Benvenuto BARBOSSA!';
-    btnVisualizza.disabled=false;
-    btnCerca.disabled=false;
-    btnRipristina.disabled=false;
-  } else {
-    const user = prompt('Inserisci user:');
-    const pass = prompt('Inserisci password:');
-    if(user==='BARBOSSA' && pass==='Vincenzo'){
-      sessionStorage.setItem('logged','BARBOSSA');
-      loginInfo.textContent='Benvenuto BARBOSSA!';
-      btnVisualizza.disabled=false;
-      btnCerca.disabled=false;
-      btnRipristina.disabled=false;
-    } else {
-      alert('Login fallito');
-    }
-  }
+ // Verifica login persistente
+if(sessionStorage.getItem('logged')==='true'){
+  loginInfo.textContent='Benvenuto BARBOSSA!';
+  btnVisualizza.disabled=false;
+  btnCerca.disabled=false;
+  btnRipristina.disabled=false;
+} else {
+  alert('Devi effettuare il login dalla pagina Home (index).');
+  window.location.href = 'index.html';
+}
+
 
   buildMap();
   setupButtons();
@@ -319,4 +311,5 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 </body>
+
 </html>
