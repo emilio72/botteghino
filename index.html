@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teatro - Home</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Helvetica,Arial;margin:0;display:flex;height:100vh}
+    nav{width:200px;background:#333;color:#fff;padding:10px;display:flex;flex-direction:column;gap:6px}
+    nav a{color:#fff;text-decoration:none;padding:6px;border-radius:6px;cursor:not-allowed;opacity:0.5}
+    nav a.enabled{cursor:pointer;opacity:1;background:#444}
+    main{flex:1;padding:20px}
+    button{margin:4px;padding:8px 12px;border:1px solid #ccc;border-radius:6px;background:#eee;cursor:not-allowed;opacity:0.6}
+    button.enabled{cursor:pointer;opacity:1;background:#ddd}
+    #welcome{margin-top:10px;color:green;font-weight:bold}
+  </style>
+</head>
+<body>
+  <nav id="menu">
+    <a href="index.html">Home</a>
+    <a href="pages/serata1.html">Prima Serata</a>
+    <a href="pages/serata2.html">Seconda Serata</a>
+    <a href="pages/serata3.html">Terza Serata</a>
+    <a href="pages/serata4.html">Quarta Serata</a>
+    <a href="pages/serata5.html">Quinta Serata</a>
+    <a href="pages/serata6.html">Sesta Serata</a>
+    <a href="pages/serata7.html">Settima Serata</a>
+    <a href="pages/serata8.html">Ottava Serata</a>
+    <a href="pages/serata9.html">Nona Serata</a>
+    <a href="pages/serata10.html">Decima Serata</a>
+  </nav>
+  <main>
+    <h1>Gestione Teatro</h1>
+    <button id="btnLogin">Login</button>
+    <div id="welcome"></div>
+  </main>
+
+  <script>
+    const btnLogin=document.getElementById('btnLogin');
+    const menuLinks=document.querySelectorAll('nav a');
+    const welcome=document.getElementById('welcome');
+
+    function disableAll(){
+      menuLinks.forEach(a=>a.classList.remove('enabled'));
+    }
+    function enableAll(){
+      menuLinks.forEach(a=>a.classList.add('enabled'));
+    }
+
+    // Se già loggato
+    if(sessionStorage.getItem('logged')==='true'){
+      enableAll();
+      welcome.textContent="Benvenuto Bar Bossa!";
+      btnLogin.textContent="Logout";
+    } else {
+      disableAll();
+    }
+
+    btnLogin.addEventListener('click',()=>{
+      if(sessionStorage.getItem('logged')==='true'){
+        sessionStorage.removeItem('logged');
+        location.reload();
+      } else {
+        const u=prompt("User:");
+        const p=prompt("Password:");
+        if(u==="BARBOSSA" && p==="Vincenzo"){
+          sessionStorage.setItem('logged','true');
+          enableAll();
+          welcome.textContent="Benvenuto Bar Bossa!";
+          btnLogin.textContent="Logout";
+        } else {
+          alert("Credenziali non valide");
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prima Serata</title>
+<style>
+:root{--seat-size:50px;--gap:6px} /* ingrandite le celle per i nomi */
+body{font-family:system-ui,Segoe UI,Helvetica,Arial; padding:18px; background:#f5f6f8}
+header{text-align:center;margin-bottom:12px}
+header h2{margin:0 0 10px 0}
+nav{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+nav a{padding:8px 12px;background:#ddd;border-radius:6px;text-decoration:none;color:#000}
+nav a:hover{background:#bbb}
+.controls{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+button{padding:8px;border-radius:6px;border:1px solid #cfcfcf;background:#fff;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,0.06)}
+#map{display:flex;flex-direction:column;gap:8px;align-items:flex-start;background:#fff;padding:16px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+.row{display:flex;gap:var(--gap);align-items:center;justify-content:flex-start}
+.rowLabel{width:32px;text-align:right;margin-right:8px;font-weight:600}
+.seat{width:var(--seat-size);height:var(--seat-size);display:flex;align-items:center;justify-content:center;
+      border-radius:6px;border:1px solid #ddd;background:#fafafa;user-select:none;
+      transition:background 0.2s,opacity 0.2s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.seat.assigned{color:#000;font-weight:700}
+footer{margin-top:14px;text-align:center}
+</style>
+</head>
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, Segoe UI, Helvetica, Arial;
+  display: flex;
+  min-height: 100vh;
+}
+.sidebar {
+  width: 200px;
+  background: #2c3e50;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+}
+.sidebar button {
+  background: #34495e;
+  border: none;
+  color: white;
+  padding: 12px;
+  margin: 5px 0;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sidebar button:hover {
+  background: #1abc9c;
+}
+.content {
+  flex: 1;
+  padding: 20px;
+  background: #f5f6f8;
+}
+.controls {
+  margin: 15px 0;
+}
+button.action {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #cfcfcf;
+  background: #fff;
+  cursor: pointer;
+}
+footer {
+  margin-top: 14px;
+  text-align: center;
+}
+</style>
+<body>
+  <!-- Menu laterale con pulsanti -->
+  <div class="sidebar">
+    <button onclick="location.href='index.html'">Home</button>
+    <button onclick="location.href='serata1.html'">Serata 1</button>
+    <button onclick="location.href='serata2.html'">Serata 2</button>
+    <button onclick="location.href='serata3.html'">Serata 3</button>
+    <button onclick="location.href='serata4.html'">Serata 4</button>
+    <button onclick="location.href='serata5.html'">Serata 5</button>
+    <button onclick="location.href='serata6.html'">Serata 6</button>
+    <button onclick="location.href='serata7.html'">Serata 7</button>
+    <button onclick="location.href='serata8.html'">Serata 8</button>
+    <button onclick="location.href='serata9.html'">Serata 9</button>
+    <button onclick="location.href='serata10.html'">Serata 10</button>
+  </div>
+
+  <!-- Contenuto principale -->
+  <div class="content">
+    <header>
+      <h2>Gestione posti - Prima Serata</h2>
+    </header>
+
+    <div class="controls">
+      <button id="btnVisualizza" class="action" disabled>Visualizza</button>
+      <button id="btnCerca" class="action" disabled>Cerca</button>
+      <button id="btnRipristina" class="action" disabled>Ripristina</button>
+      <span id="loginInfo" style="margin-left:8px;color:#666"></span>
+    </div>
+
+    <main>
+      <div id="map"></div>
+    </main>
+
+    <footer>
+      <small>Versione con Firebase Realtime Database</small>
+    </footer>
+  </div>
+</body>
+
+  <!-- Contenuto principale -->
+  <div class="content">
+    <header>
+      <h2>Gestione posti - Prima Serata</h2>
+    </header>
+
+    <div class="controls">
+      <button id="btnVisualizza" disabled>Visualizza</button>
+      <button id="btnCerca" disabled>Cerca</button>
+      <button id="btnRipristina" disabled>Ripristina</button>
+      <span id="loginInfo" style="margin-left:8px;color:#666"></span>
+    </div>
+
+    <main>
+      <div id="map"></div>
+    </main>
+
+    <footer>
+      <small>Versione con Firebase Realtime Database</small>
+    </footer>
+  </div>
+<div class="controls">
+  <button id="btnVisualizza" disabled>Visualizza</button>
+  <button id="btnCerca" disabled>Cerca</button>
+  <button id="btnRipristina" disabled>Ripristina</button>
+  <span id="loginInfo" style="margin-left:8px;color:#666"></span>
+</div>
+<main>
+  <div id="map"></div>
+</main>
+<footer>
+  <small>Versione con Firebase Realtime Database</small>
+</footer>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBqyP9E9aXwRUOZEId8j716Uq_ZvYbgCbA",
+  authDomain: "database-posti.firebaseapp.com",
+  projectId: "database-posti",
+  storageBucket: "database-posti.firebasestorage.app",
+  messagingSenderId: "193039560033",
+  appId: "1:193039560033:web:5531b673c899dc96d1a920",
+  measurementId: "G-6BVJJPFNL2",
+  databaseURL: "https://database-posti-default-rtdb.europe-west1.firebasedatabase.app/"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const rows = [
+  {label:'A', seats:8}, {label:'B', seats:8}, {label:'C', seats:16},
+  {label:'D', seats:16}, {label:'E', seats:15}, {label:'F', seats:15},
+  {label:'G', seats:15}, {label:'H', seats:14}, {label:'I', seats:14},
+  {label:'L', seats:14}, {label:'M', seats:14}, {label:'N', seats:13},
+  {label:'O', seats:13}, {label:'P', seats:13}, {label:'Q', seats:12},
+  {label:'R', seats:12}, {label:'S', seats:11}, {label:'T', seats:11},
+  {label:'U', seats:11}
+];
+
+let assignments = {};
+let mapEl, btnVisualizza, btnCerca, btnRipristina, loginInfo;
+
+function buildMap(){
+  mapEl.innerHTML='';
+  rows.forEach(row=>{
+    const rowEl = document.createElement('div'); rowEl.className='row';
+    const label = document.createElement('div'); label.className='rowLabel'; label.textContent=row.label;
+    rowEl.appendChild(label);
+    for(let i=1;i<=row.seats;i++){
+      const seatId=`${row.label}-${i}`;
+      const seat = document.createElement('div');
+      seat.className='seat small';
+      seat.dataset.seat=seatId;
+      seat.textContent=i;
+
+      if(['A','B','C'].includes(row.label)){
+        seat.addEventListener('click',()=>seatClickHandler(seatId));
+      } else {
+        seat.style.background='#d3d3d3';
+      }
+
+      rowEl.appendChild(seat);
+    }
+    mapEl.appendChild(rowEl);
+  });
+  refreshUI();
+}
+
+function refreshUI(){
+  const seatEls=document.querySelectorAll('.seat');
+  seatEls.forEach(el=>{
+    const key=el.dataset.seat;
+    const data=assignments[key];
+    if(data && data.spectator){
+      el.style.background='cyan';
+    } else if(['A','B','C'].includes(key[0])){
+      el.style.background='#fafafa';
+    }
+  });
+}
+
+function seatClickHandler(seatId){
+  const current = assignments[seatId]?assignments[seatId].spectator:'';
+  const spectator = prompt(`Inserisci o modifica spettatore per il posto ${seatId}:`,current);
+  if(spectator===null) return;
+  const cleaned = spectator.trim();
+  if(cleaned===''){ delete assignments[seatId]; } 
+  else{ assignments[seatId]={spectator:cleaned}; }
+  saveSeat(seatId, assignments[seatId]);
+  refreshUI();
+}
+
+function saveSeat(seatId,data){
+  db.ref('serata2/'+seatId).set(data||null);
+}
+
+function loadData(){
+  db.ref('serata2').on('value', snapshot=>{
+    assignments=snapshot.val()||{};
+    refreshUI();
+  });
+}
+
+function setupButtons(){
+  btnVisualizza.addEventListener('click',()=>{
+    const w=window.open('','_blank');
+    let html = `
+    <!doctype html><html><head><meta charset="utf-8"><title>Visualizza posti</title>
+    <style>
+      body{font-family:system-ui,Segoe UI,Helvetica,Arial;padding:12px}
+      .row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+      .rowLabel{width:32px;text-align:right;margin-right:8px;font-weight:600}
+      .seat{width:90px;height:40px;display:flex;align-items:center;justify-content:center;
+            border-radius:6px;border:1px solid #ddd;margin:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+    </style></head><body><h2>Mappa posti Prima Serata</h2>`;
+    rows.forEach(row=>{
+      html+=`<div class="row"><div class="rowLabel">${row.label}</div>`;
+      for(let i=1;i<=row.seats;i++){
+        const key=`${row.label}-${i}`;
+        const sp = assignments[key]?assignments[key].spectator:'';
+        const bg = sp?'cyan':(['A','B','C'].includes(row.label)?'#fafafa':'#d3d3d3');
+        html+=`<div class="seat" style="background:${bg}">${sp}</div>`;
+      }
+      html+='</div>';
+    });
+    html+='</body></html>';
+    w.document.write(html);
+    w.document.close();
+  });
+
+  btnCerca.addEventListener('click',()=>{
+    const q = prompt('Cerca spettatore:');
+    if(!q) return;
+    let found=false;
+    document.querySelectorAll('.seat').forEach(el=>{
+      el.style.background='#d3d3d3';
+    });
+    for(const k in assignments){
+      const sp=assignments[k].spectator.toLowerCase();
+      if(sp.includes(q.toLowerCase())){
+        const el=document.querySelector(`.seat[data-seat="${k}"]`);
+        if(el){ el.style.background='green'; found=true; }
+      }
+    }
+    if(!found){ alert('Nome non presente'); refreshUI(); }
+  });
+
+  btnRipristina.addEventListener('click',()=>{ refreshUI(); });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  mapEl=document.getElementById('map');
+  btnVisualizza=document.getElementById('btnVisualizza');
+  btnCerca=document.getElementById('btnCerca');
+  btnRipristina=document.getElementById('btnRipristina');
+  loginInfo=document.getElementById('loginInfo');
+
+  // Verifica login persistente
+  if(sessionStorage.getItem('logged')==='BARBOSSA'){
+    loginInfo.textContent='Benvenuto BARBOSSA!';
+    btnVisualizza.disabled=false;
+    btnCerca.disabled=false;
+    btnRipristina.disabled=false;
+  } else {
+    const user = prompt('Inserisci user:');
+    const pass = prompt('Inserisci password:');
+    if(user==='BARBOSSA' && pass==='Vincenzo'){
+      sessionStorage.setItem('logged','BARBOSSA');
+      loginInfo.textContent='Benvenuto BARBOSSA!';
+      btnVisualizza.disabled=false;
+      btnCerca.disabled=false;
+      btnRipristina.disabled=false;
+    } else {
+      alert('Login fallito');
+    }
+  }
+
+  buildMap();
+  setupButtons();
+  loadData();
+});
+</script>
+</body>
+</html>
